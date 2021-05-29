@@ -1,0 +1,378 @@
+/* Font */
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    color: white;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 400;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    height: 100%;
+    min-height: 100vh;
+    background-color: black;
+    display: flex;
+}
+
+.navbar {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    width: 9%;
+    min-width: 50px;
+    font-size: 1.5rem;
+    border-right: 2px solid rgb(133, 133, 133);
+}
+
+.nav-link {
+    margin: 20px 0px;
+}
+
+.nav-link i {
+    padding: 10px;
+    border-radius: 50%;
+}
+
+.twitter-logo {
+    font-size: 2.5rem;
+}
+
+.nav-link:hover i{
+    color: #1DA1F2;
+    background-color: rgb(218, 234, 255, 0.5);
+    transition: 0.5s;
+}
+
+.twitter-logo:hover i{
+    font-size: 2.5rem;
+    background-color: transparent;
+}
+
+.active i{
+    color: #1DA1F2;
+}
+
+.content-container {
+    overflow-y: scroll;
+    height: 100vh;
+    border-right: 2px solid rgb(133, 133, 133);
+    width: 50%;
+}
+
+.content-container::-webkit-scrollbar {
+    display: none;
+}
+
+.page-title {
+    padding: 20px;
+    font-size: 1.5rem;
+    font-weight:600;
+    border-bottom: 2px solid rgb(133, 133, 133);
+}
+
+/* Backdrop */
+.backdrop {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    background-color: rgb(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+    width: 100vw;
+    height: 100vh;
+}
+
+/* Posts Display */
+.modal {
+    display: none;
+    color: black;
+    position: absolute;
+    z-index: 3;
+    top: 10%;
+    left: 50%;
+    width: 70vw;
+    min-width: 320px;
+    transform: translateX(-50%);
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 10px;
+    max-height: 80vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.modal-show {
+    display: block;
+}
+
+.slide-up {
+    transform: translate(-50%, -100%);
+    opacity: 0;
+    transition: 0.15s;
+}
+
+.selected-post {
+    background-color: black;
+    margin-bottom: 10px;
+    border-radius: 10px;
+}
+
+.modal-title {
+    color: black;
+    padding: 15px;
+}
+
+.close-modal {
+    color: black;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.close-modal:hover {
+    color: red;
+    transition: 0.1s;
+}
+
+.post {
+    -webkit-user-select: none;  
+    -moz-user-select: none;    
+    -ms-user-select: none;      
+    user-select: none;
+    position: relative;
+}
+
+#replyTextarea {
+    color: black;
+}
+
+#deleteSubmitButton {
+    background-color: red;
+}
+
+.reply-container {
+    color: rgb(133, 133, 133);
+    margin-bottom: 8px;
+}
+
+.reply-container a {
+    color: #1DA1F2;
+}
+
+.reply-container a:hover{
+    text-decoration: underline;
+}
+
+.tweet {
+    line-height: 25px;
+    padding: 0 15px;
+    width: 90%;
+    font-size: 1rem;
+}
+
+.tweet a{
+    text-decoration: none;
+}
+
+.grey {
+    font-size: 0.9rem;
+    text-decoration: none;
+    color: rgb(221, 221, 221);
+}
+
+.tweet a:hover .grey{
+    text-decoration: underline;
+}
+
+.footer {
+    flex: 1 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgb(133, 133, 133);
+}
+
+.footer i, span {
+    pointer-events: none;
+    font-size: 1.2rem;
+}
+
+.footer span {
+    margin-left: 5px;
+}
+
+.footer button {
+    background-color: transparent;
+    border:none;
+    cursor: pointer;
+}
+
+/* User specific Text */
+.delete, .pin {
+    pointer-events: all;
+    cursor: pointer;
+    position: absolute;
+    right: 10px;
+    top: 5px;
+    font-size: 1rem;
+}
+
+.pin{
+    right: 35px;
+}
+
+.delete i, .pin i{  
+    color: rgb(133, 133, 133);
+}
+
+.pin:hover i{
+    color: green;
+    transition: 0.2s;
+}
+
+.delete:hover i{
+    color:red;
+    transition: 0.2s;
+}
+
+/* Home Page */
+.post-tweet-container, .tweet-container {
+    border-bottom: 5px solid rgb(133, 133, 133);
+    display: flex;
+    flex-direction: row;
+    padding: 10px;
+    padding-right: 0;
+}
+
+.tweet-container {
+    border-bottom: 0;
+}
+
+.post-tweet {
+    padding: 0 20px;
+    width: 90%;
+}
+
+textarea {
+    background-color: transparent;
+    border: none;
+    border-bottom: 0.5px solid rgb(133, 133, 133);
+    font-size: 1.3rem;
+    height: 100px;
+    padding: 10px;
+    resize: none;
+    width: 100%;
+}
+
+textarea:focus-within {
+    outline: none;
+}
+
+.profile-pic-container {
+    border-radius: 50%;
+    height: 70px;
+    overflow: hidden;
+    width: 70px;
+}
+
+.profile-pic {
+    width: 70px;
+}
+
+.btn {
+    background-color: #1DA1F2;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1rem;
+    left: 100%;
+    margin: 10px 0;
+    padding: 10px 20px;
+    position: relative;
+    transform: translateX(-100%);
+}
+
+.btn:disabled {
+    background-color: rgb(98, 135, 149);
+    cursor: auto;
+}
+
+.heart:hover i{
+    color: red;
+}
+
+.heart .fas {
+    color: red;
+}
+
+.retweet:hover i {
+    color: rgb(23, 191, 99);
+}
+
+.active-retweet {
+    color: rgb(23, 191, 99);
+}
+
+.reply:hover i {
+    color: #1DA1F2;
+}
+
+.retweet-container {
+    color: rgb(133, 133, 133);
+    padding: 10px 15px;
+}
+
+.retweet-container a {
+    color: rgb(133, 133, 133);
+}
+
+/* Media Query */
+@media (max-width: 860px) {
+
+    .content-container {
+        height: 92vh;
+    }
+
+    .navbar {
+        z-index: 10;
+        border-top: 1px solid white;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-evenly;
+        background-color: black;
+        font-size: 1.5rem;
+    }
+
+    .nav-link {
+        margin: 3px 0;
+    }
+
+    .twitter-logo {
+        display: none;
+    }
+
+    .twitter-logo:hover i{
+        font-size: 1.2rem;
+    }
+
+    .content-container {
+        width: 100%;
+    }
+    .highlights-container {
+        display: none;
+    }
+}
