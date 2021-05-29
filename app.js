@@ -49,17 +49,22 @@ app.use('/register', registerRoutes);
 const postRoutes = require('./routes/postRoutes');
 app.use('/post', postRoutes);
 
-// Logout Route
 // Profile Route
+const profileRoutes = require('./routes/profileRoutes');
+app.use('/profile', profileRoutes);
 
+// Logout Route
+const logoutRoutes = require('./routes/logoutRoutes');
+app.use('/logout', logoutRoutes);
 
 // ********** API Routes **********
 // Posts Route
-const postApiRoute = require('./routes/api/posts');
-app.use('/api/posts', postApiRoute);
+const postsApiRoute = require('./routes/api/posts');
+app.use('/api/posts', postsApiRoute);
 
 // Users Route
-
+const usersApiRoute = require('./routes/api/users');
+app.use('/api/users', usersApiRoute);
 
 // ********** Server listening on port: 3000 **********
 app.listen(3000, function () {

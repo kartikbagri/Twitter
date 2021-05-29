@@ -60,6 +60,26 @@ router.get('/:postId', async function(req, res) {
 })
 
 
+// ********** Get Request: /api/posts/_id_/posts **********
+router.get('/:id/posts', async function(req, res) {
+    const posts = await findAndPopulate({$or: [
+        {postedBy: req.params.id, replyTo: {$exists: false}},
+        {postedBy: req.params.id, retweetData: {$exists: true}}
+    ]});
+    res.status(201).send(posts);
+});
+
+
+// ********** Get Request: /api/posts/_id_/replies **********
+router.get('/:id/replies', async function(req, res) {
+    const posts = await findAndPopulate({
+        postedBy: req.params.id,
+        replyTo: {$exists: true},
+        retweetData: {$exists: false}
+    });
+    res.status(201).send(posts);
+})
+
 
 // ********** Patch Request (Like): /api/posts/_id_/like **********
 router.patch('/:id/like', async function(req, res) {

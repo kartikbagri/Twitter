@@ -21,12 +21,15 @@ function closeModal(modalName) {
 
 // For creation of a single post
 function createPost(postData) {
-    userSpecificText = `<span class="pin">
-        <i class="fas fa-thumbtack"></i>
-    </span>
-    <span class="delete">
-        <i class="fas fa-trash"></i>
-    </span>`;
+    let userSpecificText = '';
+    if(postData.postedBy === userLoggedIn._id) {
+        userSpecificText = `<span class="pin">
+            <i class="fas fa-thumbtack"></i>
+        </span>
+        <span class="delete">
+            <i class="fas fa-trash"></i>
+        </span>`;
+    }
     const isRetweet = postData.retweetData;
     let retweetText = '';
     if(isRetweet) {
@@ -132,10 +135,10 @@ $(document).on('click', '.retweet', function(event) {
 
 // Closing all the modals
 document.querySelector('.backdrop').addEventListener('click', function() {
-    closeModal('delete');
-    closeModal('reply');
-    closeModal('pin');
-    closeModal('unpin');
+    document.querySelectorAll('.modal').forEach(function(modal) {
+        document.querySelector('.backdrop').classList.remove('modal-show');
+        modal.classList.remove('modal-show');
+    })
 })
 
 // Replying to the post

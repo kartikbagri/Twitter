@@ -16,7 +16,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#000000">
     <script src="https://kit.fontawesome.com/7caf9c456e.js" crossorigin="anonymous"></script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.min.css">
     <link rel="stylesheet" href="/css/main.css">
+
     <title> <%= pageTitle %>  </title>
     <script>
         const userLoggedIn = '<%- JSON.stringify(locals.userLoggedIn) %>';
@@ -57,5 +60,6 @@
     <% locals.jsfiles.forEach(function(file) { %> 
         <script src="<%= file %> "></script>
     <% }) %> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.min.js"></script>
 </body>
 </html>
