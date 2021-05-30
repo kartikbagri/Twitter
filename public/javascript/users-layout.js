@@ -1,10 +1,10 @@
-function createUserHTML(user) {
+function createUserHTML(user, displayFollow) {
     let followBtn = ''
     const isFollowing = user.followers.includes(JSON.parse(userLoggedIn)._id);
     const text = isFollowing? 'Following' : 'Follow';
     const className = isFollowing? 'is-following' : 'to-follow';
 
-    if(JSON.parse(userLoggedIn)._id != user._id) {
+    if(JSON.parse(userLoggedIn)._id != user._id && displayFollow !== false) {
         followBtn = `<div class="profile-buttons">
             <a class='follow-btn ${className}' data-id="${user._id}" href="">${text}</a>
         </div>`

@@ -53,7 +53,7 @@ app.use('/post', middleware.isLoggedIn, postRoutes);
 const profileRoutes = require('./routes/profileRoutes');
 app.use('/profile', middleware.isLoggedIn, profileRoutes);
 
-// Upload Routes
+// Upload Route
 const uploadRoutes = require('./routes/uploadRoutes');
 app.use('/uploads', middleware.isLoggedIn, uploadRoutes);
 
@@ -65,6 +65,10 @@ app.use('/logout', middleware.isLoggedIn, logoutRoutes);
 const searchRoutes = require('./routes/searchRoutes');
 app.use('/search', middleware.isLoggedIn, searchRoutes);
 
+// Messages Route
+const messagesRoutes = require('./routes/messagesRoutes');
+app.use('/messages', middleware.isLoggedIn, messagesRoutes);
+
 // ********** API Routes **********
 // Posts Route
 const postsApiRoute = require('./routes/api/posts');
@@ -73,6 +77,10 @@ app.use('/api/posts', postsApiRoute);
 // Users Route
 const usersApiRoute = require('./routes/api/users');
 app.use('/api/users', usersApiRoute);
+
+// Chats Route
+const chatsApiRoute = require('./routes/api/chats');
+app.use('/api/chats', chatsApiRoute);
 
 // ********** Server listening on port: 3000 **********
 app.listen(3000, function () {

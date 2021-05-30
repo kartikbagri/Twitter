@@ -166,13 +166,17 @@ router.post('/:id/retweet', async function(req, res) {
 });
 
 // ********** Patch Request (Retweet): /api/posts/_id_ **********
-router.delete('/:postId', function(req, res) {
+router.delete('/:postId', async function(req, res) {
+    const post = await Post.findById(req.params.postId);
+    if(post.retweetUsers.includes()) {
+
+    }
     Post.deleteMany({retweetData: req.params.postId})
     .catch(function(err) {
         console.log(err);
         res.sendStatus(400);
     });
-    Post.findByIdAndDelete(req.params.postId)
+    Post.findOneAndDelete({_id: req.params.postId, postedBy: req.session.user._id})
     .then(res.sendStatus(202))
     .catch(function(err) {
         console.log(err);
