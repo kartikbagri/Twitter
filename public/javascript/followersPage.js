@@ -10,6 +10,12 @@ document.getElementById('tabFollowers').addEventListener('click', function() {
 })
 
 
+$(document).on('click', '.follow-btn', function(event) {
+    event.preventDefault();
+    followBtnHandler(event, true);
+})
+
+
 // Getting the Following
 function loadFollowing() {
     document.getElementById('tabFollowing').classList.add('active-tab');

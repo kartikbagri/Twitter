@@ -47,15 +47,23 @@ app.use('/register', registerRoutes);
 
 // Post Route
 const postRoutes = require('./routes/postRoutes');
-app.use('/post', postRoutes);
+app.use('/post', middleware.isLoggedIn, postRoutes);
 
 // Profile Route
 const profileRoutes = require('./routes/profileRoutes');
-app.use('/profile', profileRoutes);
+app.use('/profile', middleware.isLoggedIn, profileRoutes);
+
+// Upload Routes
+const uploadRoutes = require('./routes/uploadRoutes');
+app.use('/uploads', middleware.isLoggedIn, uploadRoutes);
 
 // Logout Route
 const logoutRoutes = require('./routes/logoutRoutes');
-app.use('/logout', logoutRoutes);
+app.use('/logout', middleware.isLoggedIn, logoutRoutes);
+
+// Search Route
+const searchRoutes = require('./routes/searchRoutes');
+app.use('/search', middleware.isLoggedIn, searchRoutes);
 
 // ********** API Routes **********
 // Posts Route

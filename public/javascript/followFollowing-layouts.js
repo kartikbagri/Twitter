@@ -1,5 +1,4 @@
-$(document).on('click', '.follow-btn', function(event) {
-    event.preventDefault();
+function followBtnHandler(event, toReload) {
     const userId = event.target.dataset.id;
     $.ajax({
         url: `/api/users/${userId}/follow`,
@@ -18,7 +17,9 @@ $(document).on('click', '.follow-btn', function(event) {
                 event.target.classList.remove('is-following');
                 if (followersNum) followersNum.textContent = Number(followersNum.textContent) - 1;
             }
-            location.reload();
+            if(toReload) {
+                location.reload();
+            }
         }
     });
-})
+}

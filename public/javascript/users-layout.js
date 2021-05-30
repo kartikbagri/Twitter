@@ -1,6 +1,6 @@
 function createUserHTML(user) {
     let followBtn = ''
-    const isFollowing = JSON.parse(userLoggedIn).following.includes(user._id);
+    const isFollowing = user.followers.includes(JSON.parse(userLoggedIn)._id);
     const text = isFollowing? 'Following' : 'Follow';
     const className = isFollowing? 'is-following' : 'to-follow';
 

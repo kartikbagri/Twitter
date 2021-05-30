@@ -22,7 +22,7 @@ function closeModal(modalName) {
 // For creation of a single post
 function createPost(postData) {
     let userSpecificText = '';
-    if(postData.postedBy === userLoggedIn._id) {
+    if(postData.postedBy._id === JSON.parse(userLoggedIn)._id) {
         userSpecificText = `<span class="pin">
             <i class="fas fa-thumbtack"></i>
         </span>
@@ -163,7 +163,9 @@ replySubmitBtn.addEventListener('click', function() {
         replyTo: replySubmitBtn.dataset.id
     };
     $.post('/api/posts', data);
-    location.reload();
+    displayPosts();
+    closeModal('reply');
+    replyTextarea.value="";
 })
 
 // Closing reply Modal

@@ -47,6 +47,22 @@ router.get('/', async function(req, res) {
 });
 
 
+// ********** Get Request: /api/posts/search/_value_ **********
+router.get('/search/:value', async function(req, res) {
+    const posts = await findAndPopulate({content: {$regex: req.params.value, $options: 'i' }});
+    if(posts === null) {
+        res.sendStatus(400);
+    }
+    else {
+        posts.sort(function(a, b) {
+            return a.createdAt - b.createdAt;
+        });
+        res.status(201).send(posts);
+    }
+});
+
+
+
 // ********** Get Request: /api/posts/_id_ **********
 router.get('/:postId', async function(req, res) {
     const result = {};

@@ -1,5 +1,12 @@
 let cropper;
 
+// Adding event listener to follow button
+$(document).on('click', '.follow-btn', function(event) {
+    event.preventDefault();
+    followBtnHandler(event, true);
+})
+
+
 // Getting the posts (By default)
 function loadPosts() {
     $.get(`/api/posts/${profileUserId}/posts`, function(posts) {
@@ -77,6 +84,7 @@ document.querySelector('.change-profile-pic')?.addEventListener('click', functio
 })
 
 
+// Profile Pic to blob
 $('#profilePhoto').change(function() {
     if(this.files && this.files[0]) {
         const image = document.getElementById('profilePhotoPreview')
@@ -93,7 +101,33 @@ $('#profilePhoto').change(function() {
         }
         reader.readAsDataURL(this.files[0]);
     }
-})
+});
+
+
+// Handling uploading of Profile Picture
+$('#profilePicUploadButton').click(function() {
+    const canvas = cropper.getCroppedCanvas();
+    if(canvas == null) {
+        console.log('Could not upload image. Make sure it is a valid image file');
+        return;
+    }
+    canvas.toBlob(function(blob) {
+        const formData = new FormData();
+        formData.append('croppedImage', blob);
+        $.ajax({
+            url: '/api/users/profilePicture',
+            type: 'POST',
+            data: formData,
+            // For not converting the transferring data to string
+            processData: false,
+            // For forcing not to add header
+            contentType: false,
+            success: function() {
+                location.reload();
+            }
+        });
+    });
+});
 
 
 // Closing Profile Pic Modal
@@ -108,7 +142,53 @@ document.querySelector('.change-cover-pic')?.addEventListener('click', function(
 })
 
 
-/ // Closing Cover Photo Modal
+// Cover Pic to blob
+$('#coverPhoto').change(function() {
+    if(this.files && this.files[0]) {
+        const image = document.getElementById('coverPhotoPreview')
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            image.setAttribute('src', e.target.result);
+            if(cropper !== undefined) {
+                cropper.destroy();
+            }
+            cropper = new Cropper(image, {
+                aspectRatio: 16 / 9,
+                background: false,
+            });
+        }
+        reader.readAsDataURL(this.files[0]);
+    }
+});
+
+
+// Handling uploading of Cover Photo
+$('#coverPhotoUploadButton').click(function() {
+    const canvas = cropper.getCroppedCanvas();
+    if(canvas == null) {
+        console.log('Could not upload image. Make sure it is a valid image file');
+        return;
+    }
+    canvas.toBlob(function(blob) {
+        const formData = new FormData();
+        formData.append('croppedImage', blob);
+        $.ajax({
+            url: '/api/users/coverPhoto',
+            type: 'POST',
+            data: formData,
+            // For not converting the transferring data to string
+            processData: false,
+            // For forcing not to add header
+            contentType: false,
+            success: function() {
+                location.reload();
+            }
+        });
+    });
+});
+
+
+// Closing Cover Photo Modal
 document.getElementById('coverPhotoCloseModal')?.addEventListener('click', function() {
     closePicModal('coverPhoto');
 })
