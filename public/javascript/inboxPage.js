@@ -7,7 +7,7 @@ $(document).ready(function() {
 function outputChats(chats) {
     chats.forEach(function(chat) {
         const html = createChatHTML(chat);
-        document.querySelector('.result-container').insertAdjacentHTML('afterbegin', html);
+        document.querySelector('.inbox-result-container').insertAdjacentHTML('afterbegin', html);
     });
 }
 
