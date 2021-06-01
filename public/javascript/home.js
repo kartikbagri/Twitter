@@ -1,4 +1,3 @@
-
 // ********** Handling Posting of a new tweet **********
 // Enabling and disabling the post button
 const postTextarea = document.getElementById('postTextarea');
@@ -6,7 +5,7 @@ postTextarea?.addEventListener('keyup', function (event) {
     const value = event.target.value.trim();
     if (!value) submitBtn.setAttribute('disabled', true);
     else submitBtn.removeAttribute('disabled');
-})
+});
 
 // Clicking on the post button
 const submitBtn = document.getElementById('submitPostButton');

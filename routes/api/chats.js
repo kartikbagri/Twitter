@@ -1,6 +1,8 @@
 // ********** Importing Modules **********
 const express = require('express');
 const Chat = require('../../schema/chatSchema');
+const User = require('../../schema/userSchema');
+const Message = require('../../schema/messageSchema');
 
 
 // ********** Using Modules **********
@@ -19,12 +21,26 @@ router.get('/:chatId', function(req, res) {
 })
 
 
+// ********** Get Request: /api/chats/_chatId_/messages *********
+router.get('/:chatId/messages', function(req, res) {
+    Message.find({chat: req.params.chatId})
+    .populate('sender')
+    .then(function(message) {
+        res.status(200).send(message);
+    }).catch(function() {
+        res.sendStatus(400);
+    })
+})
+
+
 // ********** Post Request: /api/posts/ **********
 router.get('/', function(req, res) {
     Chat.find({users: {$elemMatch: {$eq: req.session.user._id}}})
     .populate('users')
+    .populate('latestMessage')
     .sort({'updatedAt': 1})
-    .then(function(chats) {
+    .then(async function(chats) {
+        chats = await User.populate(chats, {path: 'latestMessage.sender'})
         res.status(200).send(chats);
     }).catch(function() {
         res.sendStatus(400);

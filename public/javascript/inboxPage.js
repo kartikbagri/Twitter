@@ -14,8 +14,7 @@ function outputChats(chats) {
 function createChatHTML(chat) {
     const chatName = getChatName(chat);
     const img = getChatImageElement(chat);
-    // TODO:
-    const latestMessage = 'Hi there';
+    const latestMessage = getLatestMessage(chat.latestMessage);;
     return `
     <a class="chat-item" href="/messages/${chat._id}">
         ${img}
@@ -25,6 +24,14 @@ function createChatHTML(chat) {
         </div>
     </a>
     `
+}
+
+function getLatestMessage(latestMessage) {
+    if(latestMessage) {
+        const sender = latestMessage.sender;
+        return `${sender.firstName} ${sender.lastName}: ${latestMessage.content}`
+    }
+    return 'New Chat'
 }
 
 
@@ -52,10 +59,10 @@ function getOtherChatUsers(users) {
 function getChatImageElement(chat) {
     const otherUsers = getOtherChatUsers(chat.users);
     let groupChatClass = '';
-    let chatImage = getUserChatImageElement(chat.users[0]);
+    let chatImage = getUserChatImageElement(otherUsers[0]);
     if(otherUsers.length > 1) {
         groupChatClass = 'group-chat-img';
-        chatImage += getUserChatImageElement(chat.users[1]);
+        chatImage += getUserChatImageElement(otherUsers[1]);
     }
     return `<div class="results-image-container ${groupChatClass}">${chatImage}</div> `
 }

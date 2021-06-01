@@ -1,6 +1,15 @@
 $(document).ready(function() {
     $.get(`/api/chats/${JSON.parse(chat)._id}`, function(resultChat) {
         document.getElementById('chatName').innerText = getChatName(resultChat);
+        document.querySelector('.chat-titlebar-container').insertAdjacentHTML('afterbegin', getChatImageElement(JSON.parse(chat)));
+    });
+    $.get(`/api/chats/${JSON.parse(chat). _id}/messages`, function(messages) {
+        let lastSenderId = '';
+        messages.forEach(function(message, index) {
+            addChatMessageHTML(message, messages[index+1], lastSenderId);
+            lastSenderId = message.sender._id;
+        });
+        scrollToBottom(false);
     });
 });
 
@@ -58,12 +67,100 @@ document.getElementById('chatNameCloseModal').addEventListener('click', function
     closeModal('chatName');
 })
 
+
+document.querySelector('.send-message-button').addEventListener('click', function() {
+    submitMessage();
+    document.querySelector('.send-message-button')
+})
+
+
+$('.messageInput').keydown(function(event) {
+    if(event.key == 'Enter' && !(event.shiftKey)) {
+        submitMessage();
+        return false;
+    }
+});
+
+
+function submitMessage() {
+    const content = $('.messageInput').val().trim();
+    if(content != '') {
+        $('.messageInput').val('');
+        sendMessage(content);
+    }
+}
+
+
+function sendMessage(message) {
+    $.post('/api/messages', {content: message, chatId: JSON.parse(chat)._id}, function(data) {
+        addChatMessageHTML(data);
+    });
+    scrollToBottom(true);
+}
+
+
+function addChatMessageHTML(message, nextMessage, lastSenderId) {
+    if(!message || !message._id) {
+        return console.log('Message is not valid');
+    }
+    let messageDiv = '';
+    if(!nextMessage && !lastSenderId) {
+        messageDiv = createMessageHTML(message, null, '');
+    } else {
+        messageDiv = createMessageHTML(message, nextMessage, lastSenderId);
+    }
+    document.querySelector('.chat-container').insertAdjacentHTML('beforeend', messageDiv);
+
+}
+
+
+function createMessageHTML(message, nextMessage, lastSenderId) {
+    const sender = message.sender;
+    const senderName = sender.firstName + " " + sender.lastName;
+    const currentSenderId = sender._id;
+    const nextSenderId = nextMessage? nextMessage.sender._id : '';
+    const isFirst = lastSenderId != currentSenderId;
+    const isLast = nextSenderId != currentSenderId;
+    const isMine = String(message.sender._id) == String(JSON.parse(userLoggedIn)._id);
+    let liClassName = isMine? 'mine' : 'theirs';
+    let nameElement = '';
+    let imageContainer = '';
+    let profileImage = '';
+    if(isFirst) {
+        liClassName += ' first';
+        if(!isMine) {
+            nameElement = `<span class = "sender-name">${senderName}</span>`
+        }
+    }
+    if(isLast) {
+        liClassName += ' last';
+        profileImage = `<img src="${sender.profilePic}">`
+    }
+    if(!isMine) {
+        imageContainer = `
+        <div class="image-container">
+            ${profileImage}
+        </div>`
+    }
+    return `
+    ${nameElement}
+    <li class="message ${liClassName}">
+    ${imageContainer}
+    <div class="message-container">
+            <p class="message-body">${message.content}</p>
+        </div>
+    </li>
+    `
+}
+
+
 const users = JSON.parse(chat).users;
 
 function getChatImageElement(chat) {
     let groupChatClass = '';
-    let chatImage = getUserChatImageElement(chat.users[0]);
+    let chatImage = '';
     if(chat.isGroupChat) {
+        chatImage = getUserChatImageElement(chat.users[0]);
         groupChatClass = 'chat-group-chat-img';
         if(chat.users.length > 3) {
             chatImage = `<span class="other-users-num">+ ${chat.users.length - 3}</span>` + chatImage;
@@ -74,6 +171,10 @@ function getChatImageElement(chat) {
             }
             chatImage += getUserChatImageElement(chat.users[i]);
         }
+    }
+    else {
+        otherUsers = getOtherChatUsers(users);
+        chatImage = getUserChatImageElement(otherUsers[0]);
     }
     return `<div class="chat-results-image-container ${groupChatClass}">${chatImage}</div> `
 }
@@ -105,4 +206,14 @@ function getChatName(chat) {
     }
 }
 
-document.querySelector('.chat-titlebar-container').insertAdjacentHTML('afterbegin', getChatImageElement(JSON.parse(chat)))
+
+function scrollToBottom(animated) {
+    const container = $('.chat-container');
+    const scrollHeight = container[0].scrollHeight;
+    if(animated) {
+        container.animate({scrollTop: scrollHeight}, "slow");
+    }
+    else {
+        container.scrollTop(scrollHeight);
+    }
+}

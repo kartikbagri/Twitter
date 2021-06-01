@@ -82,6 +82,10 @@ app.use('/api/users', usersApiRoute);
 const chatsApiRoute = require('./routes/api/chats');
 app.use('/api/chats', chatsApiRoute);
 
+// Messages Route
+const messagesApiRoute = require('./routes/api/messages');
+app.use('/api/messages', messagesApiRoute);
+
 // ********** Server listening on port: 3000 **********
 app.listen(3000, function () {
     console.log('Server is running on port 3000')

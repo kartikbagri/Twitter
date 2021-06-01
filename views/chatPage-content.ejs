@@ -18,18 +18,18 @@
     
     <div class="chat-page-container">
         <div class="chat-titlebar-container">
-            <h2 id="chatName"></h2>
+            <h2 id="chatName" class="ellipsis"></h2>
         </div>
         <div class="main-chat-container">
-            <div class="chat-container">
+            <ul class="chat-container">
                 
-            </div>
-            <div class="chat-footer">
-                <textarea name="messageInput" id="" placeholder="Type a message..." cols="30" rows="10"></textarea>
-                <button class="send-message-button">
-                    <i class="fas fa-paper-plane"></i>
-                </button>
-            </div>
+            </ul>
+        </div>
+        <div class="chat-footer">
+            <textarea name="messageInput" class="messageInput" placeholder="Type a message..." cols="30" rows="10"></textarea>
+            <button class="send-message-button">
+                <i class="fas fa-paper-plane"></i>
+            </button>
         </div>
     </div>
 <% } %> 
