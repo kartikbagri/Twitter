@@ -10,6 +10,7 @@ function followBtnHandler(event, toReload) {
                 event.target.textContent = 'Following'
                 event.target.classList.remove('to-follow');
                 if (followersNum) followersNum.textContent = Number(followersNum.textContent) + 1;
+                emitNotification(userId);
             }
             else {
                 event.target.classList.add('to-follow');

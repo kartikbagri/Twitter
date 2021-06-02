@@ -5,6 +5,8 @@ const multer = require('multer');
 const upload = multer({dest: 'uploads/'})
 const path = require('path');
 const fs = require('fs');
+const Notification = require('../../schema/notificationSchema');
+
 
 
 // ********** Using Modules **********
@@ -32,6 +34,9 @@ router.patch('/:id/follow', async function(req, res) {
         console.log(err);
         res.sendStatus(400);
     });
+    if(!isFollowing) {
+        await Notification.insertNotification(userId, userLoggedIn, 'follow', userLoggedIn);
+    }
     res.status(200).send(req.session.user);
 })
 

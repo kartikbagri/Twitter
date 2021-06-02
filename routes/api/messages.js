@@ -1,6 +1,7 @@
 // ********** Importing Modules **********
 const express = require('express');
 const Message = require('../../schema/messageSchema');
+const User = require('../../schema/userSchema');
 const Chat = require('../../schema/chatSchema');
 
 
@@ -23,6 +24,7 @@ router.post('/', function(req, res) {
     .then(async function(newMessage) {
         newMessage = await newMessage.populate('sender').execPopulate();
         newMessage = await newMessage.populate('chat').execPopulate();
+        newMessage = await User.populate(newMessage, {path: 'chat.users'});
         const chatLatest = await Chat.findByIdAndUpdate(req.body.chatId, {latestMessage: newMessage._id})
         res.status(201).send(newMessage);
     })

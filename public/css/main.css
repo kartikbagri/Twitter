@@ -30,6 +30,7 @@ body {
 }
 
 .nav-link {
+    text-decoration: none;
     margin: 20px 0px;
 }
 
@@ -40,6 +41,21 @@ body {
 
 .twitter-logo {
     font-size: 2.5rem;
+}
+
+#messagesBadge, #notificationsBadge {
+    padding: 1px 6px;
+    border-radius: 50%;
+    font-size: 15px;
+    position: absolute;
+    transform: translateX(21px);
+    display: inline-block;
+    background-color: rgb(255, 0, 0);
+    visibility: hidden;
+}
+
+#messagesBadge.active, #notificationsBadge.active {
+    visibility: visible;
 }
 
 .nav-link:hover i{
@@ -922,12 +938,33 @@ textarea:focus-within {
     width: 100%;
 }
 
+.typing-dots {
+    width: 50px;
+    padding: 0 5px;
+    margin: 8px 0;
+    background-color: #f1f0f0;
+    border-radius: 30px;
+    display: none;
+}
+
+.typing-dots img {
+    width: 100%;
+}
+
+.notifications-page-container .active {
+    background-color: #153d6255;
+}
+
+.results-image-container, .chat-item-details-container {
+    pointer-events: none;
+}
+
+.header-button a {
+    cursor: pointer;
+}
+
 /* Media Query */
 @media (max-width: 860px) {
-
-    .navbar i {
-        padding-right: 0;
-    }
 
     .nav-link {
         margin: 3px 0;

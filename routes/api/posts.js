@@ -2,6 +2,7 @@
 const express = require('express');
 const Post = require('../../schema/postSchema');
 const User = require('../../schema/userSchema');
+const Notification = require('../../schema/notificationSchema');
 
 
 // ********** Using Modules **********
@@ -21,7 +22,14 @@ router.post('/', function(req, res) {
         pinned: false
     });
     postData.save().then(async function(newPost) {
-        newPost = await Post.populate(newPost, {path: 'postedBy'});
+        newPost = await User.populate(newPost, {path: 'postedBy'});
+        newPost = await Post.populate(newPost, {path: 'replyTo'});
+        newPost = await Post.populate(newPost, {path: 'replyTo.replyTo'});
+        newPost = await User.populate(newPost, {path: 'replyTo.replyTo.postedBy'});
+        newPost = await User.populate(newPost, {path: 'replyTo.postedBy'});
+        if(newPost.replyTo) {
+            await Notification.insertNotification(newPost.replyTo.postedBy, req.session.user, 'reply', newPost._id); 
+        }
         res.status(201).send(newPost);
     }).catch(function(err) {
         console.log(err);
@@ -93,6 +101,7 @@ router.get('/:id/replies', async function(req, res) {
         replyTo: {$exists: true},
         retweetData: {$exists: false}
     });
+    
     res.status(201).send(posts);
 })
 
@@ -119,6 +128,10 @@ router.patch('/:id/like', async function(req, res) {
         console.log(err);
         res.sendStatus(400);
     });
+    if(!isLiked) {
+        await Notification.insertNotification(post.postedBy, userId, 'postLike', post._id)
+        .catch((err) => console.log(err));
+    }
     res.send(post);
 });
 
@@ -162,6 +175,9 @@ router.post('/:id/retweet', async function(req, res) {
         console.log(err);
         res.sendStatus(400);
     });
+    if(!deleteRetweet) {
+        await Notification.insertNotification(post.postedBy, userId, 'retweet', post._id); 
+    }
     res.send(post);
 });
 
@@ -192,6 +208,8 @@ async function findAndPopulate(query) {
     posts = await User.populate(posts, {path: 'retweetData.postedBy'});
     posts = await Post.populate(posts, {path: 'retweetData.replyTo'});
     posts = await Post.populate(posts, {path: 'replyTo'});
+    posts = await Post.populate(posts, {path: 'replyTo.replyTo'});
+    posts = await User.populate(posts, {path: 'replyTo.replyTo.postedBy'});
     posts = await User.populate(posts, {path: 'replyTo.postedBy'});
     posts = await User.populate(posts, {path: 'retweetData.replyTo.postedBy'});
     return posts;

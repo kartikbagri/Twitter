@@ -38,6 +38,7 @@ function createPost(postData) {
         postData = postData.retweetData;
     }
     const isReply = postData.replyTo;
+    console.log(postData.replyTo);
     const replyText = isReply? `Replied to <a href="/profile/${postData.replyTo.postedBy?.username}"> @${postData.replyTo.postedBy?.username} </a>` : '';
     const time = timeDifference(new Date(), new Date(postData.createdAt));
     let retweetClass = postData.retweetUsers.includes(JSON.parse(userLoggedIn)._id)? 'active-retweet': '';
@@ -104,6 +105,7 @@ $(document).on('click', '.heart', function(event) {
             if(postData.likes.includes(JSON.parse(userLoggedIn)._id)) {
                 event.target.querySelector('.fa-heart').classList.add('fas');
                 event.target.querySelector('.fa-heart').classList.remove('far');
+                emitNotification(postData.postedBy);
             }
             else {
                 event.target.querySelector('.fa-heart').classList.remove('fas');
@@ -124,6 +126,7 @@ $(document).on('click', '.retweet', function(event) {
             event.target.querySelector('.retweet-number').textContent = postData.retweetUsers.length || '';
             if(postData.retweetUsers.includes(JSON.parse(userLoggedIn)._id)) {
                 event.target.querySelector('.fa-retweet').classList.add('active-retweet');
+                emitNotification(postData.postedBy);
             }
             else {
                 event.target.querySelector('.fa-retweet').classList.remove('active-retweet');
@@ -162,10 +165,12 @@ replySubmitBtn.addEventListener('click', function() {
         content: replyTextarea.value,
         replyTo: replySubmitBtn.dataset.id
     };
-    $.post('/api/posts', data);
-    displayPosts();
-    closeModal('reply');
-    replyTextarea.value="";
+    $.post('/api/posts', data, function(postData) {
+        emitNotification(postData.replyTo.postedBy);
+        displayPosts();
+        closeModal('reply');
+        replyTextarea.value="";
+    });
 })
 
 // Closing reply Modal

@@ -30,6 +30,13 @@ mongoose.connect('mongodb://localhost:27017/twitterDatabase', {
     console.log(`Error setting up connection to database: ${err}`);
 });
 
+// ********** Server listening on port: 3000 **********
+const server = app.listen(3000, function () {
+    console.log('Server is running on port 3000')
+});
+const io = require('socket.io')(server, {
+    pingTimeout: 60000
+});
 
 // ********** Routes **********
 // Home Route
@@ -69,6 +76,10 @@ app.use('/search', middleware.isLoggedIn, searchRoutes);
 const messagesRoutes = require('./routes/messagesRoutes');
 app.use('/messages', middleware.isLoggedIn, messagesRoutes);
 
+// Notifications Route
+const notificationsRoutes = require('./routes/notificationsRoutes');
+app.use('/notifications', middleware.isLoggedIn, notificationsRoutes);
+
 // ********** API Routes **********
 // Posts Route
 const postsApiRoute = require('./routes/api/posts');
@@ -86,7 +97,36 @@ app.use('/api/chats', chatsApiRoute);
 const messagesApiRoute = require('./routes/api/messages');
 app.use('/api/messages', messagesApiRoute);
 
-// ********** Server listening on port: 3000 **********
-app.listen(3000, function () {
-    console.log('Server is running on port 3000')
+// Notifications Route
+const notificationsApiRoute = require('./routes/api/notifications');
+app.use('/api/notifications', notificationsApiRoute);
+
+// Socket IO
+io.on('connection', function(socket) {
+    socket.on('setup', function(userData) {
+        socket.join(userData._id);
+        socket.emit('connected');
+    });
+    socket.on('join room', function(room) {
+        socket.join(room);
+    });
+    socket.on('typing', function(room) {
+        socket.in(room).emit('typing');
+    });
+    socket.on('stop typing', function(room) {
+        socket.in(room).emit('stop typing');
+    });
+    socket.on('new message', function(newMessage) {
+        const chat = newMessage.chat;
+        if(!chat.users) return console.log('Chat.users is undefined');
+        chat.users.forEach(function(user) {
+            if(user._id == newMessage.sender._id) {
+                return;
+            }
+            socket.in(user._id).emit('message received', newMessage);
+        });
+    });
+    socket.on('notification received', function(room) {
+        socket.in(room).emit('notification received', room)
+    })
 });

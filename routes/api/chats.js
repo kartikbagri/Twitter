@@ -40,6 +40,11 @@ router.get('/', function(req, res) {
     .populate('latestMessage')
     .sort({'updatedAt': 1})
     .then(async function(chats) {
+        if(req.query.unreadOnly !== undefined && req.query.unreadOnly == true) {
+            chats = chats.filter(function(chat) {
+                return (!chat.latestMessage.readBy.includes(req.session.user._id));
+            });
+        }
         chats = await User.populate(chats, {path: 'latestMessage.sender'})
         res.status(200).send(chats);
     }).catch(function() {

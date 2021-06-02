@@ -1,4 +1,14 @@
+let typing = false;
+let lastTypingTime;
+
 $(document).ready(function() {
+    socket.emit('join room', JSON.parse(chat)._id);
+    socket.on('typing', function() {
+        $('.typing-dots').show();
+    });
+    socket.on('stop typing', function() {
+        $('.typing-dots').hide();
+    });
     $.get(`/api/chats/${JSON.parse(chat)._id}`, function(resultChat) {
         document.getElementById('chatName').innerText = getChatName(resultChat);
         document.querySelector('.chat-titlebar-container').insertAdjacentHTML('afterbegin', getChatImageElement(JSON.parse(chat)));
@@ -75,11 +85,33 @@ document.querySelector('.send-message-button').addEventListener('click', functio
 
 
 $('.messageInput').keydown(function(event) {
+    updateTyping();
     if(event.key == 'Enter' && !(event.shiftKey)) {
         submitMessage();
         return false;
     }
 });
+
+
+function updateTyping() {
+    if(!connected) {
+        return;
+    }
+    if(!typing) {
+        typing = true;
+        socket.emit('typing', JSON.parse(chat)._id);
+    }
+    lastTypingTime = new Date().getTime();
+    let timerLength = 3000;
+    setTimeout(function() {
+        const timeNow = new Date().getTime();
+        const timeDiff = timeNow - lastTypingTime;
+        if(timeDiff >= timerLength && typing) {
+            socket.emit('stop typing', JSON.parse(chat)._id);
+            typing = false;
+        }
+    }, timerLength);
+}
 
 
 function submitMessage() {
@@ -94,8 +126,11 @@ function submitMessage() {
 function sendMessage(message) {
     $.post('/api/messages', {content: message, chatId: JSON.parse(chat)._id}, function(data) {
         addChatMessageHTML(data);
+        if(connected) {
+            socket.emit('new message', data);
+        }
+        scrollToBottom(true);
     });
-    scrollToBottom(true);
 }
 
 
@@ -109,7 +144,7 @@ function addChatMessageHTML(message, nextMessage, lastSenderId) {
     } else {
         messageDiv = createMessageHTML(message, nextMessage, lastSenderId);
     }
-    document.querySelector('.chat-container').insertAdjacentHTML('beforeend', messageDiv);
+    document.querySelector('.typing-dots').insertAdjacentHTML('beforebegin', messageDiv);
 
 }
 
