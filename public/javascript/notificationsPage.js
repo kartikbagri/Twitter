@@ -38,7 +38,7 @@ function createNotificationHTML(notification) {
             <img src="${userFrom.profilePic}">
         </div>
         <div class="chat-item-details-container ellipsis">
-            <span class="ellipsis">${notificationText}</span>
+            ${notificationText}
         </div>
     </a>
     `

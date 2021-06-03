@@ -127,6 +127,6 @@ io.on('connection', function(socket) {
         });
     });
     socket.on('notification received', function(room) {
-        socket.in(room).emit('notification received', room)
-    })
+        socket.in(room).emit('notification received', room);
+    });
 });

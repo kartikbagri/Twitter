@@ -38,7 +38,6 @@ function createPost(postData) {
         postData = postData.retweetData;
     }
     const isReply = postData.replyTo;
-    console.log(postData.replyTo);
     const replyText = isReply? `Replied to <a href="/profile/${postData.replyTo.postedBy?.username}"> @${postData.replyTo.postedBy?.username} </a>` : '';
     const time = timeDifference(new Date(), new Date(postData.createdAt));
     let retweetClass = postData.retweetUsers.includes(JSON.parse(userLoggedIn)._id)? 'active-retweet': '';
@@ -166,10 +165,10 @@ replySubmitBtn.addEventListener('click', function() {
         replyTo: replySubmitBtn.dataset.id
     };
     $.post('/api/posts', data, function(postData) {
-        emitNotification(postData.replyTo.postedBy);
         displayPosts();
         closeModal('reply');
         replyTextarea.value="";
+        emitNotification(postData.replyTo.postedBy._id);
     });
 })
 

@@ -40,9 +40,9 @@ router.get('/', function(req, res) {
     .populate('latestMessage')
     .sort({'updatedAt': 1})
     .then(async function(chats) {
-        if(req.query.unreadOnly !== undefined && req.query.unreadOnly == true) {
+        if(req.query.unreadOnly !== undefined && req.query.unreadOnly == 'true') {
             chats = chats.filter(function(chat) {
-                return (!chat.latestMessage.readBy.includes(req.session.user._id));
+                return (chat.latestMessage && !chat.latestMessage.readBy.includes(req.session.user._id));
             });
         }
         chats = await User.populate(chats, {path: 'latestMessage.sender'})
@@ -90,6 +90,13 @@ router.patch('/:chatId', function(req, res) {
     });
 });
 
-
+router.patch('/:chatId/messages/markAsRead', function(req, res) {
+    Message.updateMany({chat: req.params.chatId}, {$addToSet: {readBy: req.session.user._id}})
+    .then(function() {
+        res.sendStatus(204);
+    }).catch(function() {
+        res.sendStatus(400);
+    });
+});
 
 module.exports = router;

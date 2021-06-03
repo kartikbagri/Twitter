@@ -5,6 +5,7 @@ $(document).ready(function() {
     socket.emit('join room', JSON.parse(chat)._id);
     socket.on('typing', function() {
         $('.typing-dots').show();
+        scrollToBottom(true);
     });
     socket.on('stop typing', function() {
         $('.typing-dots').hide();
@@ -13,13 +14,14 @@ $(document).ready(function() {
         document.getElementById('chatName').innerText = getChatName(resultChat);
         document.querySelector('.chat-titlebar-container').insertAdjacentHTML('afterbegin', getChatImageElement(JSON.parse(chat)));
     });
-    $.get(`/api/chats/${JSON.parse(chat). _id}/messages`, function(messages) {
+    $.get(`/api/chats/${JSON.parse(chat)._id}/messages`, function(messages) {
         let lastSenderId = '';
         messages.forEach(function(message, index) {
             addChatMessageHTML(message, messages[index+1], lastSenderId);
             lastSenderId = message.sender._id;
         });
         scrollToBottom(false);
+        markAllMessagesAsRead(JSON.parse(chat)._id);
     });
 });
 
@@ -80,11 +82,10 @@ document.getElementById('chatNameCloseModal').addEventListener('click', function
 
 document.querySelector('.send-message-button').addEventListener('click', function() {
     submitMessage();
-    document.querySelector('.send-message-button')
 })
 
 
-$('.messageInput').keydown(function(event) {
+$('.messageInput').keydown(function(event){
     updateTyping();
     if(event.key == 'Enter' && !(event.shiftKey)) {
         submitMessage();
@@ -102,7 +103,7 @@ function updateTyping() {
         socket.emit('typing', JSON.parse(chat)._id);
     }
     lastTypingTime = new Date().getTime();
-    let timerLength = 3000;
+    let timerLength = 2000;
     setTimeout(function() {
         const timeNow = new Date().getTime();
         const timeDiff = timeNow - lastTypingTime;
@@ -119,6 +120,8 @@ function submitMessage() {
     if(content != '') {
         $('.messageInput').val('');
         sendMessage(content);
+        socket.emit('stop typing', JSON.parse(chat)._id);
+        typing = false;
     }
 }
 
@@ -251,4 +254,12 @@ function scrollToBottom(animated) {
     else {
         container.scrollTop(scrollHeight);
     }
+}
+
+function markAllMessagesAsRead(chatId) {
+    $.ajax({
+        url: `/api/chats/${chatId}/messages/markAsRead`,
+        type: 'PATCH',
+        success: () => refreshMessagesBadge()
+    })
 }

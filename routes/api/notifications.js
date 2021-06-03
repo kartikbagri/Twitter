@@ -31,6 +31,20 @@ router.get('/', function(req, res) {
     });
 });
 
+router.get('/latest', function(req, res) {
+    Notification.findOne({userTo: req.session.user._id})
+    .populate('userTo')
+    .populate('userFrom')
+    .sort({createdAt: -1})
+    .then(function(results) {
+        res.status(200).send(results);
+    })
+    .catch(function(err) {
+        console.log(err);
+        res.sendStatus(400);
+    });
+});
+
 // ********** Patch Request: /api/messages/ **********
 router.patch('/:id/markAsOpened', function(req, res) {
     Notification.findByIdAndUpdate(req.params.id, {opened: true})

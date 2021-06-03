@@ -8,9 +8,11 @@ socket.on('message received', function(newMessage) {
     messageReceived(newMessage);
 })
 
-socket.on('notification received', function(newNotification) {
-    console.log(newNotification);
-})
+socket.on('notification received', function() {
+    $.get('/api/notifications/latest', function(notificationData) {
+        showNotificationPopup(notificationData); 
+    });
+});
 
 function emitNotification(userId) {
     if(userId == JSON.parse(userLoggedIn)._id) {

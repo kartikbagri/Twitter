@@ -14,9 +14,10 @@ function outputChats(chats) {
 function createChatHTML(chat) {
     const chatName = getChatName(chat);
     const img = getChatImageElement(chat);
-    const latestMessage = getLatestMessage(chat.latestMessage);;
+    const latestMessage = getLatestMessage(chat.latestMessage);
+    const activeClass = (!chat.latestMessage || chat.latestMessage.readBy.includes(JSON.parse(userLoggedIn)._id))? '' : 'active';
     return `
-    <a class="chat-item" href="/messages/${chat._id}">
+    <a class="chat-item ${activeClass}" href="/messages/${chat._id}">
         ${img}
         <div class="chat-item-details-container ellipsis">
             <span class="heading ellipsis">${chatName}</span>
