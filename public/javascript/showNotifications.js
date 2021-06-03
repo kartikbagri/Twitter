@@ -16,12 +16,12 @@ function messageReceived(newMessage) {
 }
 
 function showMessagePopup(message) {
-    if(!message.chat.latestMessage._id) {
+    if(!message.chat.latestMessage || !message.chat.latestMessage._id) {
         message.chat.latestMessage = message;
     }
     const html = createChatHTML(message.chat);
     const element = $(html);
-    element.prependTo('.notificationsList').hide().slideDown('fast');
+    element.hide().prependTo('.notificationsList').slideDown('fast');
     setTimeout(function() {
         element.fadeOut();
     }, 5000);
@@ -73,7 +73,7 @@ function getOtherChatUsersPopup(users) {
 
 
 function getChatImageElementPopup(chat) {
-    const otherUsers = getOtherChatUsers(chat.users);
+    const otherUsers = getOtherChatUsersPopup(chat.users);
     let groupChatClass = '';
     let chatImage = getUserChatImageElementPopup(otherUsers[0]);
     if(otherUsers.length > 1) {
