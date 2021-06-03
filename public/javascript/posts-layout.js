@@ -1,10 +1,11 @@
 // Modals Opening
-function openModal(modalName, selectedPost) {
+function openModal(modalName, selectedPost, pinId=null) {
     document.querySelector('.backdrop').classList.add('modal-show');
     document.getElementById(`${modalName}SelectedPost`).innerHTML = '';
     document.getElementById(`${modalName}Modal`).classList.add('modal-show');
     document.getElementById(`${modalName}SelectedPost`).insertAdjacentHTML('afterbegin', selectedPost.outerHTML);
-    document.getElementById(`${modalName}SubmitButton`).setAttribute('data-id', selectedPost.dataset.id);
+    if(!pinId) document.getElementById(`${modalName}SubmitButton`).setAttribute('data-id', selectedPost.dataset.id);
+    else document.getElementById(`${modalName}SubmitButton`).setAttribute('data-id', pinId);
 }
 
 // Modals Closing
@@ -20,21 +21,29 @@ function closeModal(modalName) {
 
 
 // For creation of a single post
-function createPost(postData) {
+function createPost(postData, mainPost) {
+    const mainPostClass = mainPost? 'big' : '';
     let userSpecificText = '';
+    let pinnedClass = '';
+    let pinnedPostText = '';
     if(postData.postedBy._id === JSON.parse(userLoggedIn)._id) {
-        userSpecificText = `<span class="pin">
+        if(postData.pinned) {
+            pinnedPostText = `<span class="pin-text grey">Pinned</span>`
+            pinnedClass = 'pinned';
+        }
+        userSpecificText = `<span class="pin ${pinnedClass}">
             <i class="fas fa-thumbtack"></i>
         </span>
         <span class="delete">
             <i class="fas fa-trash"></i>
         </span>`;
     }
+    const postId = postData._id;
     const isRetweet = postData.retweetData;
     let retweetText = '';
     if(isRetweet) {
         const retweetTime = timeDifference(new Date(), new Date(postData.createdAt));
-        retweetText = `Retweeted by <a href="/profile/${postData.postedBy.username}">@${postData.postedBy.username}</a> • ${retweetTime}`;
+        retweetText = `<div class="retweet-container"}>Retweeted by <a href="/profile/${postData.postedBy.username}">@${postData.postedBy.username}</a> • ${retweetTime}</div>`;
         postData = postData.retweetData;
     }
     const isReply = postData.replyTo;
@@ -43,9 +52,10 @@ function createPost(postData) {
     let retweetClass = postData.retweetUsers.includes(JSON.parse(userLoggedIn)._id)? 'active-retweet': '';
     const heartClass = postData.likes.includes(JSON.parse(userLoggedIn)._id)? 'fas' : 'far';
     return `
-    <div data-id="${postData._id}" class="post">
+    <div data-id="${postData._id}" class="post ${mainPostClass}">
         <div class="user-specific">${userSpecificText}</div>
-        <div class="retweet-container">${retweetText}</div>
+        <div class="pin-container" data-id="${postId}">${pinnedPostText}</div>
+        ${retweetText}
         <div class="tweet-container">
             <div class="profile-pic-container">
                 <img class="profile-pic" src="${postData.postedBy.profilePic}" alt="User's profile pic" class="profile-pic">
@@ -175,6 +185,74 @@ replySubmitBtn.addEventListener('click', function() {
 // Closing reply Modal
 document.getElementById('replyCloseModal').addEventListener('click', function() {
     closeModal('reply');
+})
+
+// Pinning the post
+$(document).on('click', '.pin', function(event) {
+    const selectedPost = event.target.closest('.post');
+    const pinId = event.target.closest('.post').querySelector('.pin-container').dataset.id;
+    console.log(pinId);
+    if(event.target.closest('.pinned')) {
+        if(pinId) {
+            openModal('unpin', selectedPost, pinId);
+        }
+        else {
+            openModal('unpin', selectedPost);
+        }
+    }
+    else {
+        if(pinId) {
+            openModal('pin', selectedPost, pinId);
+        }
+        else {
+            openModal('pin', selectedPost);
+        }
+    }
+});
+
+
+// Handling the clicking of pin button
+const pinSubmitBtn = document.getElementById('pinSubmitButton');
+pinSubmitBtn.addEventListener('click', function() {
+    const data = {
+        pinned: true
+    };
+    $.ajax({
+        url: `/api/posts/${pinSubmitBtn.dataset.id}`,
+        data: data,
+        type: 'PATCH',
+        success: function(){
+            location.reload();
+        }
+    });
+});
+
+
+// Handling the clicking of unpin button
+const unpinSubmitBtn = document.getElementById('unpinSubmitButton');
+unpinSubmitBtn.addEventListener('click', function() {
+    const data = {
+        pinned: false
+    };
+    $.ajax({
+        url: `/api/posts/${unpinSubmitBtn.dataset.id}`,
+        data: data,
+        type: 'PATCH',
+        success: function(){
+            location.reload();
+        }
+    });
+})
+
+
+// Closing the pin Modal
+document.getElementById('pinCloseModal').addEventListener('click', function() {
+    closeModal('pin');
+})
+
+// Closing the unpin Modal
+document.getElementById('unpinCloseModal').addEventListener('click', function() {
+    closeModal('unpin');
 })
 
 // Deleting the post

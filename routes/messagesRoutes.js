@@ -15,6 +15,7 @@ router.get('/', function(req, res) {
     const payload = {
         pageTitle: 'Inbox',
         userLoggedIn: req.session.user,
+        messages: 'active'
     };
     res.status(200).render('inboxPage', payload);
 });
@@ -24,6 +25,7 @@ router.get('/new', function(req, res) {
     const payload = {
         pageTitle: 'New Message',
         userLoggedIn: req.session.user,
+        messages: 'active'
     };
     res.status(200).render('newMessage', payload);
 });
@@ -37,6 +39,7 @@ router.get('/:chatId', async function(req, res) {
     const payload = {
         pageTitle: 'Chat',
         userLoggedIn: req.session.user,
+        messages: 'active'
     };
     if(!isValidId) {
         payload.errorMessage = 'Chat does not exist';

@@ -272,6 +272,19 @@ body {
     transition: 0.2s;
 }
 
+.pinned i{
+    color: green;
+}
+
+.pin-container {
+    padding-left: 10px;
+    padding-top: 10px;
+}
+
+.pinned-post-container {
+    border-bottom: 5px solid rgb(133, 133, 133);
+}
+
 /* Home Page */
 .post-tweet-container, .tweet-container {
     border-bottom: 5px solid rgb(133, 133, 133);
@@ -362,6 +375,10 @@ textarea:focus-within {
 
 .retweet-container a {
     color: rgb(133, 133, 133);
+}
+
+.post.big{
+    background-color: #09334d;
 }
 
 /* Profile Page */

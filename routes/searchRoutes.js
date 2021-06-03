@@ -24,6 +24,7 @@ function createPayload(userLoggedIn) {
     return {
         pageTitle: `Search`,
         userLoggedIn: userLoggedIn,
+        search: 'active'
     }
 }
 

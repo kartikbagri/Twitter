@@ -25,6 +25,9 @@ notificationSchema.statics.insertNotification = async function(userTo, userFrom,
         notificationType: notificationType,
         entityId: entityId
     }
+    if(data.userTo == data.userFrom) {
+        return;
+    }
     await Notification.deleteOne(data).catch(err => console.log(err));
     Notification.create(data).then(function(result) {
         return result;

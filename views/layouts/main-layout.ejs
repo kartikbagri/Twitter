@@ -33,24 +33,24 @@
         <a class="nav-link twitter-logo" href="/">
             <i class="fab fa-twitter"></i>
         </a>
-        <a class="nav-link active" href="/">
+        <a class="nav-link <%= locals.home %>" href="/">
             <i class="fas fa-home"></i>
         </a>
-        <a class="nav-link" href="/search">
+        <a class="nav-link <%= locals.search %>" href="/search">
             <i class="fas fa-search"></i>
         </a>
-        <a class="nav-link" href="/notifications">
+        <a class="nav-link <%= locals.notifications %>" href="/notifications">
             <span id="notificationsBadge">8</span>
             <i class="fas fa-bell"></i>
         </a>
-        <a class="nav-link" href="/messages">
+        <a class="nav-link <%= locals.messages %>" href="/messages">
             <span id="messagesBadge">8</span>
             <i class="fas fa-envelope"></i>
         </a>
-        <a class="nav-link" href="/profile">
+        <a class="nav-link <%= locals.profile %>" href="/profile">
             <i class="fas fa-user"></i>
         </a>
-        <a class="nav-link" href="/logout">
+        <a class="nav-link <%= locals.logout %>" href="/logout">
             <i class="fas fa-sign-out-alt"></i>
         </a>
     </nav>

@@ -69,8 +69,6 @@ router.get('/search/:value', async function(req, res) {
     }
 });
 
-
-
 // ********** Get Request: /api/posts/_id_ **********
 router.get('/:postId', async function(req, res) {
     const result = {};
@@ -81,6 +79,22 @@ router.get('/:postId', async function(req, res) {
     result.postData = postData;
     result.replies = await findAndPopulate({replyTo: req.params.postId});
     res.status(200).send(result);
+})
+
+
+// ********** Get Request: /api/posts/_id_/posts **********
+router.get('/:id/posts', async function(req, res) {
+    const posts = await findAndPopulate({$or: [
+        {postedBy: req.params.id, replyTo: {$exists: false}},
+        {postedBy: req.params.id, retweetData: {$exists: true}}
+    ]});
+    res.status(201).send(posts);
+});
+
+
+router.get('/:userId/pinnedPost', async function(req, res) {
+    const postData = await findAndPopulate({postedBy: req.params.userId, pinned: true})
+    res.status(200).send(postData[0]);
 })
 
 
@@ -194,6 +208,22 @@ router.delete('/:postId', async function(req, res) {
     });
     Post.findOneAndDelete({_id: req.params.postId, postedBy: req.session.user._id})
     .then(res.sendStatus(202))
+    .catch(function(err) {
+        console.log(err);
+        res.sendStatus(400);
+    });
+});
+
+// ********** Patch Request (Pin): /api/posts/_id_ **********
+router.patch('/:postId', async function(req, res) {
+    if(req.body.pinned !== undefined) {
+        await Post.updateMany({postedBy: req.session.user._id}, {pinned: false})
+        .catch(function(err) {
+            console.log(err);
+        })
+    }
+    Post.findByIdAndUpdate(req.params.postId, req.body)
+    .then(res.sendStatus(204))
     .catch(function(err) {
         console.log(err);
         res.sendStatus(400);

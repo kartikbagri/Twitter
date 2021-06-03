@@ -15,6 +15,16 @@ function loadPosts() {
     });
 }
 
+function loadPinnedPost() {
+    $.get(`/api/posts/${profileUserId}/pinnedPost`, function(post) {
+        if(!post) {
+            return;
+        }
+        document.querySelector('.pinned-post-container').innerHTML = "";
+        document.querySelector('.pinned-post-container').innerHTML = createPost(post);
+    });
+}
+
 // Adding event listener to replies tab
 document.getElementById('tabReplies').addEventListener('click', function() {
     document.getElementById('tabReplies').classList.add('active-tab');
@@ -44,7 +54,9 @@ function loadReplies() {
 function outputPosts(posts) {
     posts.forEach(function(post) {
         const html = createPost(post);
-        document.querySelector('.post-container').insertAdjacentHTML('afterbegin', html);
+        if(!post.pinned) {
+            document.querySelector('.post-container').insertAdjacentHTML('afterbegin', html);
+        }
     });
 }
 
@@ -195,3 +207,4 @@ document.getElementById('coverPhotoCloseModal')?.addEventListener('click', funct
 
 
 loadPosts();
+loadPinnedPost();

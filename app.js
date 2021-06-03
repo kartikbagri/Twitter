@@ -41,7 +41,7 @@ const io = require('socket.io')(server, {
 // ********** Routes **********
 // Home Route
 app.get('/', middleware.isLoggedIn, function(req, res) {
-    res.render('home', {userLoggedIn: req.session.user});
+    res.render('home', {userLoggedIn: req.session.user, home:'active'});
 });
 
 // Login Route

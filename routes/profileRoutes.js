@@ -12,7 +12,8 @@ router.get('/', function(req, res) {
     const payload = {
         pageTitle: `${req.session.user.firstName} ${req.session.user.lastName}`,
         userLoggedIn: req.session.user,
-        profileUser: req.session.user
+        profileUser: req.session.user,
+        profile: 'active'
     }
     res.render('profilePage', payload);
 });
@@ -34,14 +35,16 @@ router.get('/:username', async function(req, res) {
         if(!profileUserById){
             payload = {
                 pageTitle: 'User not found',
-                userLoggedIn: req.session.user
+                userLoggedIn: req.session.user,
+                profile: 'active'
             }
         }
         else {
             payload = {
                 pageTitle: `${profileUserById.firstName} ${profileUserById.lastName}`,
                 userLoggedIn: req.session.user,
-                profileUser: profileUserById
+                profileUser: profileUserById,
+                profile: 'active'
             }
         }
     }
@@ -49,7 +52,8 @@ router.get('/:username', async function(req, res) {
         payload = {
             pageTitle: `${profileUser.firstName} ${profileUser.lastName}`,
             userLoggedIn: req.session.user,
-            profileUser: profileUser
+            profileUser: profileUser,
+            profile: 'active'
         }
     }
     res.render('profilePage', payload);
@@ -65,7 +69,8 @@ router.get('/:username/followers', async function(req, res) {
         pageTitle: `${profileUser.firstName} ${profileUser.lastName}`,
         profileUser: profileUser,
         userLoggedIn: req.session.user,
-        selectedTab: 'followers'
+        selectedTab: 'followers',
+        profile: 'active'
     }
     res.render('followersPage', payload);
 });
@@ -80,7 +85,8 @@ router.get('/:username/following', async function(req, res) {
         pageTitle: `${profileUser.firstName} ${profileUser.lastName}`,
         profileUser: profileUser,
         userLoggedIn: req.session.user,
-        selectedTab: 'following'
+        selectedTab: 'following',
+        profile: 'active'
     }
     res.render('followersPage', payload);
 })
