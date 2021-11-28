@@ -40,5 +40,4 @@ This is a social media web Application. The web application main idea revolves a
 ### Author
 This app has been made by Kartik Bagri.<br>
 #### **Contact Details:**
-• +91-9818075499 (IN) <br>
 • kartikbagri199@gmail.com
