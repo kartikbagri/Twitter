@@ -8,7 +8,6 @@ const Message = require('../../schema/messageSchema');
 // ********** Using Modules **********
 const router = express.Router();
 
-
 // ********** Get Request: /api/chats/_chatId_ *********
 router.get('/:chatId', function(req, res) {
     Chat.findOne({_id: req.params.chatId, users: {$elemMatch: {$eq: req.session.user._id}}})

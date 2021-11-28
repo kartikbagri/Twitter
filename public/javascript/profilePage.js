@@ -124,6 +124,7 @@ $('#profilePicUploadButton').click(function() {
         return;
     }
     canvas.toBlob(function(blob) {
+        
         const formData = new FormData();
         formData.append('croppedImage', blob);
         $.ajax({

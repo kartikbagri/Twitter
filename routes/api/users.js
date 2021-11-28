@@ -12,7 +12,6 @@ const Notification = require('../../schema/notificationSchema');
 // ********** Using Modules **********
 const router = express.Router();
 
-
 // ********** Patch Request: /api/users/_id_/follow **********
 router.patch('/:id/follow', async function(req, res) {
     const userId = req.params.id;

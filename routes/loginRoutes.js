@@ -7,12 +7,10 @@ const bcrypt = require('bcrypt');
 // ********** Using Modules **********
 const router = express.Router();
 
-
 // ********** Get Request: /login/ **********
 router.get('/', function(req, res) {
     res.render('login');
 });
-
 
 // ********** Post Request: /login/ **********
 router.post('/', async function(req, res) {

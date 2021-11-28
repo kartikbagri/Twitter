@@ -93,7 +93,6 @@ $('.messageInput').keydown(function(event){
     }
 });
 
-
 function updateTyping() {
     if(!connected) {
         return;
