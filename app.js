@@ -19,7 +19,7 @@ app.use(session({
 
 
 // ********** Database Connection **********
-mongoose.connect('mongodb://localhost:27017/twitterDatabase', {
+mongoose.connect('mongodb+srv://admin-kartik:test123@cluster0.ipdc2.mongodb.net/twitterDatabase', {
     useUnifiedTopology: true,
     useNewUrlParser: true,
     useCreateIndex: true,
@@ -31,8 +31,8 @@ mongoose.connect('mongodb://localhost:27017/twitterDatabase', {
 });
 
 // ********** Server listening on port: 3000 **********
-const server = app.listen(3000, function () {
-    console.log('Server is running on port 3000')
+const server = app.listen(process.env.PORT || 3000, function () {
+    console.log('Server is running');
 });
 const io = require('socket.io')(server, {
     pingTimeout: 60000
