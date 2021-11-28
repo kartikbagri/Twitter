@@ -19,7 +19,7 @@ app.use(session({
 
 
 // ********** Database Connection **********
-mongoose.connect(process.env.MOGODB_URI, {
+mongoose.connect(process.env.MONGODB_URI, {
     useUnifiedTopology: true,
     useNewUrlParser: true,
     useCreateIndex: true,
