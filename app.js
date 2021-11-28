@@ -19,7 +19,7 @@ app.use(session({
 
 
 // ********** Database Connection **********
-mongoose.connect('mongodb+srv://admin-kartik:test123@cluster0.ipdc2.mongodb.net/twitterDatabase', {
+mongoose.connect(process.env.MOGODB_URI, {
     useUnifiedTopology: true,
     useNewUrlParser: true,
     useCreateIndex: true,
