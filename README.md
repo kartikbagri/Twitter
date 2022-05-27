@@ -1,5 +1,4 @@
 # Twitter Clone
-#### **Author:** *Kartik Bagri*
 This is a twitter clone web application.
 <hr>
 
@@ -38,6 +37,4 @@ This is a social media web Application. The web application main idea revolves a
 <hr>
 
 ### Author
-This app has been made by Kartik Bagri.<br>
-#### **Contact Details:**
-• kartikbagri199@gmail.com
+This app has been made by **[Kartik Bagri](https://github.com/kartikbagri)**.<br>
