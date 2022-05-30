@@ -2,15 +2,29 @@
 const express = require('express');
 const User = require('../../schema/userSchema');
 const multer = require('multer');
-const upload = multer({dest: 'uploads/'})
-const path = require('path');
-const fs = require('fs');
 const Notification = require('../../schema/notificationSchema');
-
-
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
 // ********** Using Modules **********
 const router = express.Router();
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+    secure: true
+});
+
+const storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: async (req, file) => {
+        return {
+            folder: 'twitter',
+            public_id: `${req.session.user._id}_${req.path.substr(1)}`,
+        };
+    }
+});
+const upload = multer({ storage: storage });
 
 // ********** Patch Request: /api/users/_id_/follow **********
 router.patch('/:id/follow', async function(req, res) {
@@ -96,16 +110,15 @@ router.post('/profilePicture', upload.single('croppedImage'), function(req, res)
         console.log('No file uploaded with the ajax request');
         return res.sendStatus(400);
     }
-    const filePath = `/uploads/images/${req.file.filename}.png`;
-    const tempPath = req.file.path;
-    const targetPath = path.join(__dirname, `../../${filePath}`);
-    fs.rename(tempPath, targetPath, async function(err) {
-        if(err){
-            console.log(err);
-            return res.sendStatus(400);
-        }
-        req.session.user = await User.findByIdAndUpdate(req.session.user._id,{profilePic: filePath}, {new: true});
-        res.sendStatus(204);
+    const userId = req.session.user._id;
+    User.findByIdAndUpdate(userId, {profilePic: req.file.path}, {new: true})
+    .then(function(user) {
+        req.session.user = user;
+        res.status(200).send(user);
+    })
+    .catch(function(err) {
+        console.log(err);
+        res.sendStatus(400);
     });
 });
 
@@ -116,16 +129,14 @@ router.post('/coverPhoto', upload.single('croppedImage'), function(req, res) {
         console.log('No file uploaded with the ajax request');
         return res.sendStatus(400);
     }
-    const filePath = `/uploads/images/${req.file.filename}.png`;
-    const tempPath = req.file.path;
-    const targetPath = path.join(__dirname, `../../${filePath}`);
-    fs.rename(tempPath, targetPath, async function(err) {
-        if(err){
-            console.log(err);
-            return res.sendStatus(400);
-        }
-        req.session.user = await User.findByIdAndUpdate(req.session.user._id,{coverPhoto: filePath}, {new: true});
-        res.sendStatus(204);
+    const userId = req.session.user._id;
+    User.findByIdAndUpdate(userId, {coverPhoto: req.file.path}, {new: true})
+    .then(function(user) {
+        req.session.user = user;
+        res.status(200).send(user);
+    }).catch(function(err) {
+        console.log(err);
+        res.sendStatus(400);
     });
 });
 
